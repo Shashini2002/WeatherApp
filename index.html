@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>forecastlogic</title>
+    <link rel="stylesheet" href="style.css" />
+
+</head>
+
+
+
+<body>
+    <section id="home">
+        <header>
+            <a href="#" class="logo"><img src="images/1.png" alt=""> <div class="title"> ForecastLogic </div>
+            </a>
+            <ul class="navlist">
+                <li class="lilink"><a href="#home" class="nav-item ">Home</a></li>
+                <li class="lilink"><a href="#Current" class="nav-item ">Current</a></li>
+                <li class="lilink"><a href="#weather-forecast" class="nav-item ">Forecast</a></li>
+                <li class="lilink"><a href="#map" class="nav-item ">Map</a></li>
+                <li class="lilink"><button id="mode-toggle" onclick="toggleMode()">Dark Mode</button></li>
+            </ul>
+            <div id="current-time"></div>
+        </header>
+        <div class="card">
+            <div class="search1">
+                <input type="text" id="searchTxt" placeholder="Enter Location" spellcheck="false">
+                <button id="searchBtn"><img src="images/search.png"></button>
+            </div>
+            <div class="current-weather"></div>
+            <br>
+            <img class="weather-icon" id="i" src="images/clear.png">
+            <div class="temp" id="temp">23&deg;C</div>
+            <p class="condition" id="condition">Cloudy</p>
+            <h2 class="location" id="location">Gampaha</h2>
+            <div class="details" id="details">
+                <div class="col">
+                    <img src="images/humidity.png">
+                    <div>
+                        <p class="hum" id="hum">50%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="images/wind.png">
+                    <div>
+                        <p class="wind" id="wind">15km/h</p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="Current">
+        <div class="card1">
+            <div class="titel">CURRENT WEATHER..</div>
+            <div style="overflow-x:auto;">
+                <table class="tblW">
+                    <tr>
+                        <td><strong class="locationPara">📍Location</strong></td>
+                        <td><strong class="tempPara">🌡Temperature</strong></td>
+                        <td><strong class="humidityPara">❄Humidity</strong></td>
+                        <td><strong class="windPara">🍃Wind Speed</strong></td>
+                        <td><strong class="conditionPara">💧Condition</strong></td>
+                        <td><strong class="regionPara">🎗Region</strong></td>
+                        <td><strong class="countryPara">🗺 Country</strong></td>
+                        <td><strong>longitude</strong></td>
+                        <td><strong>latitude</strong></td>
+                    </tr>
+                    <tr>
+                        <td><div class="tz_id" id="tz_id1">Asia/Gampaha</div></td>
+                        <td><div class="temp_c" id="temp1">25</div></td>
+                        <td><div class="humidity" id="humidity1">33</div></td>
+                        <td><div class="wind_kph" id="wind1">75.22</div></td>
+                        <td class="url" id="condition1">Cloudy</td>
+                        <td><div class="region" id="region">Western</div></td>
+                        <td><div class="country" id="country">Sri-Lanka</div></td>
+                        <td><div id="lon">11.33</div></td>
+                        <td><div id="lat">20.55</div></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="weather-forecast">
+        <div class="forecast-category">NEXT FOUR DAYS WEATHER FORECAST</div>
+      
+        <div class="forecast-container">
+          
+        </div>
+
+    </section>
+    <section id="past-weather-forecast">
+        <div class="forecast-category"> PAST EIGHT DAYS WEATHER FORECAST</div>
+        <div class="forecast-container">
+           
+        </div>
+    </section>
+
+    <section id="map">
+        <div class="titel">MAP</div>
+    </section>
+
+    <script>
+         function toggleMode() {
+            const body = document.body;
+            const currentMode = body.classList.contains('dark-mode') ? 'dark' : 'light';
+            body.classList.toggle('dark-mode');
+            const modeToggleBtn = document.getElementById('mode-toggle');
+            modeToggleBtn.textContent = currentMode === 'dark' ? 'Light Mode' : 'Dark Mode';
+        }
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const currentTime = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('current-time').textContent = currentTime;
+        }
+
+        // Update time every second
+        setInterval(updateTime, 1000);
+
+        document.addEventListener("DOMContentLoaded", function () {
+           
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    fetchWeatherData(latitude, longitude);
+                });
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+        });
+
+        document.getElementById("searchBtn").addEventListener("click", function () {
+            const searchVal = document.getElementById("searchTxt").value;
+            fetchWeatherDataByLocation(searchVal);
+        });
+
+        function fetchWeatherData(latitude, longitude) {
+            const apiKey = "e3f5667eb4014a558b594723241203";
+            const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${latitude},${longitude}&aqi=no`;
+            fetch(url)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    console.log(data);
+                    updateWeatherData(data);
+                })
+                .catch(function (error) {
+                    console.error("Error fetching weather data:", error);
+                });
+        }
+
+        function fetchWeatherDataByLocation(location) {
+            const apiKey = "e3f5667eb4014a558b594723241203";
+            const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=no`;
+            fetch(url)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    console.log(data);
+                    updateWeatherData(data);
+                })
+                .catch(function (error) {
+                    console.error("Error fetching weather data:", error);
+                });
+        }
+
+        function updateWeatherData(data) {
+            document.getElementById("temp").innerHTML = data['current']['temp_c'] + "&deg;C";
+            document.getElementById("condition").innerHTML = data['current']['condition']['text'];
+            document.getElementById("location").innerHTML = data['location']['name'];
+            document.getElementById("hum").innerHTML = data['current']['humidity'] + "%";
+            document.getElementById("wind").innerHTML = data['current']['wind_kph'] + "km/h";
+
+            document.getElementById("temp1").innerHTML = data['current']['temp_c'] + "&deg;C";
+            document.getElementById("condition1").innerHTML = data['current']['condition']['text'];
+            document.getElementById("tz_id1").innerHTML = data['location']['tz_id'];
+            document.getElementById("humidity1").innerHTML = data['current']['humidity'] + "%";
+            document.getElementById("wind1").innerHTML = data['current']['wind_kph'] + "km/h";
+            document.getElementById("region").innerHTML = data['location']['region'];
+            document.getElementById("country").innerHTML = data['location']['country'];
+            document.getElementById("lon").innerHTML = data['location']['lon'];
+            document.getElementById("lat").innerHTML = data['location']['lat'];
+
+            document.getElementById("i").src = `http:${data['current']['condition']['icon']}`;
+
+           
+            fetchForecast(data['location']['lat'], data['location']['lon']);
+            fetchPastWeather(data['location']['lat'], data['location']['lon']);
+        }
+
+        function fetchPastWeather(latitude, longitude) {
+            const apiKey = "e3f5667eb4014a558b594723241203";
+            const currentDate = new Date();
+            const pastDate = new Date(currentDate);
+            pastDate.setDate(pastDate.getDate() - 8); // Calculate date 8 days ago
+            const startDateString = formatDate(pastDate);
+            const endDateString = formatDate(currentDate);
+
+            const url = `http://api.weatherapi.com/v1/history.json?key=${apiKey}&q=${latitude},${longitude}&dt=${startDateString}&end_dt=${endDateString}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    displayPastWeather(data);
+                })
+                .catch(error => console.error("Error fetching past weather data:", error));
+        }
+
+        function displayPastWeather(data) {
+            const forecastContainer = document.querySelector('#past-weather-forecast .forecast-container');
+            forecastContainer.innerHTML = '';
+
+            data.forecast.forecastday.forEach(day => {
+                const pastForecastCard = createPastForecastCard(day.date, day.day.avgtemp_c, day.day.condition.text, `http:${day.day.condition.icon}`);
+                forecastContainer.appendChild(pastForecastCard);
+            });
+        }
+
+        function createPastForecastCard(date, temp, condition, icon) {
+            const pastForecastCard = document.createElement('div');
+            pastForecastCard.classList.add('forecast-card');
+            const pastForecastInfo = `
+                <div class="forecast-image">
+                    <img src="${icon}" class="forecast-thumb" alt="${condition}">
+                </div>
+                <div class="forecast-info">
+                    <h2 class="forecast-date">${date}</h2>
+                    <p class="forecast-temp">${temp}&deg;C</p>
+                    <div class="condition2">${condition}</div>
+                </div>
+            `;
+            pastForecastCard.innerHTML = pastForecastInfo;
+            return pastForecastCard;
+        }
+
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function fetchForecast(latitude, longitude) {
+            const apiKey = "e3f5667eb4014a558b594723241203";
+            fetch(`http://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${latitude},${longitude}&days=4`)
+                .then(response => response.json())
+                .then(data => {
+                    const forecastContainer = document.querySelector('.forecast-container');
+
+                    forecastContainer.innerHTML = '';
+
+                    data.forecast.forecastday.forEach(day => {
+                        createForecastCard(day.date, day.day.avgtemp_c, day.day.condition.text,`http:${day.day.condition.icon}`);
+                    });
+                })
+                .catch(error => console.error("Error fetching forecast data:", error));
+        }
+
+        function createForecastCard(date, temp, condition, icon) {
+            const forecastCard = document.createElement('div');
+            forecastCard.classList.add('forecast-card');
+            const forecastInfo = `
+                <div class="forecast-image">
+                    <img src="${icon}" class="forecast-thumb" >
+                </div>
+                <div class="forecast-info">
+                    <h2 class="forecast-date">${date}</h2>
+                    <p class="forecast-temp">${temp}&deg;C</p>
+                    <div class="condition2">${condition}</div>
+                </div>
+            `;
+            forecastCard.innerHTML = forecastInfo;
+            document.querySelector('.forecast-container').appendChild(forecastCard);
+        }
+
+    </script>
+
+</body>
+
+</html>

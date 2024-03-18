@@ -1,0 +1,347 @@
+*{
+  margin: 0;
+  padding: 0;
+ 
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+ text-decoration: none;
+ list-style: none;
+ 
+ 
+ }
+ 
+ :root{
+     --color-text:#cdc6c3;
+     --hover-color:#68dee7;
+     --neon-box-shadow: 0 0 5rem #68dee7;
+     --index: calc(1vw+1vh);
+ }
+ 
+ body{
+     font-family: "Outfit",sans-serif;
+    
+     background-color: #ffffff;
+     color: #000000;
+ }
+ 
+ /* Dark mode styles */
+ .dark-mode {
+     background-color: #1f1f1f;
+     color: #ffffff;
+         
+    
+ }
+#mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 9999;
+}
+#current-time {
+  position: fixed;
+  top: 0px;
+  left: 20px;
+  font-size: 38px;
+  font-weight: 400px;
+  color: #ffffff;
+  z-index: 9999;
+}
+ 
+ a{
+     color: #fff;
+ }
+ 
+ header{
+     
+     left: 0;
+     top: 0;
+     width: 100%;
+     padding: 20px 12%;
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+ }
+ 
+ .logo{
+     display: flex;
+     align-items: center;
+    color: var(--hover-color);
+   margin-left:-100px ;
+   color:rgb(233, 144, 42);
+     font-size: 60px;
+     
+ }
+ 
+ .logo img{
+     width:50px;
+     height:50px;
+    
+     
+ 
+ }
+ 
+ 
+  
+ header .navlist{
+     display: flex;
+ }
+ 
+ .navlist li{
+     margin: 0 1.5rem;
+     
+ }
+ 
+ .navlist li .nav-item{
+     position: relative;
+     padding: 17px 0;
+     font-weight: 500;
+     font-size: 24px;
+     transition: all .2s ease;
+ }
+ 
+ .navlist li .nav-item:hover{
+     color: var(--hover-color);
+ }
+ 
+ 
+ 
+ .navlist li .nav-item::before{
+     content: "";
+     position: absolute;
+     width: 0;
+     left: 0;
+     bottom:-1px;
+     height: 1px;
+     background: var(--hover-color);
+     border-radius: 50%;
+     transition: all .3s ease;
+     
+ }
+ 
+ .navlist li .nav-item:hover::before{
+     width: 100%;
+ }
+ 
+ 
+ .navlist li .active{
+     color: var(--hover-color);
+     border-bottom: 1px solid var(--hover-color);
+ }
+ section{
+   display: block;
+   justify-content: space-between;
+   padding: 20px;
+ }
+ 
+ #home{
+   
+   
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.545);
+    position: relative;
+    background: linear-gradient(rgba(0, 0, 0, 0.567), rgba(0, 0, 0, 0.564)), url('images/us-radar-national-1536x1024.jpg');
+     background-size: cover;
+     padding:20px 0px 60px;
+     background-repeat: no-repeat;
+     background-position: center;
+     overflow-x: hidden;
+ }
+ 
+ .card{
+   
+     width: 90%;
+     max-width: 470px;
+     background: rgba(100, 107, 107, 0.438);
+     color: #fff;
+     margin:100px auto 0;
+     border-radius:20px;
+     padding: 40px 35px;
+     text-align: center;
+ } 
+ .search1{
+     
+     width:100%;
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+ }
+ .search1 input{
+     border: 0;
+     outline: 0;
+ 
+     background: #ebfffc;
+     color:#555;
+     padding: 10px 25px;
+     height: 60px;
+     border-radius: 30px;
+     flex: 1;
+     margin-right: 16px;
+     font-size: 18px;
+ }
+   .search1 button{
+     border: 0;
+     outline: 0;
+     background: #ebfffc;
+     border-radius: 50%;
+     width:60px;
+     height: 60px;
+     cursor: pointer;
+   }  
+   .search1 button img{
+     width:20px;
+   }
+   .time-date{
+    font-size: 28px;
+    color: white;
+   }
+   .weather-icon{
+     width: 170px;
+     margin-top: 30px;
+ 
+   }
+   .temp{
+     font-size: 40px;
+     font-weight: 800;
+     color: #68dee7;
+   
+   }
+  
+   .weather h2{
+     font-size: 45px;
+     font-weight: 400;
+     margin-top: 10px;
+   }
+   .details{
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     padding: 0 20px;
+     margin-top: 50px;
+   }
+   .col{
+     display: flex;
+     align-items: center;
+     text-align: left;
+   }
+   .col img{
+     width:40px ;
+     margin-right: 10px;
+   }
+   .hum, .wind,.Condition{
+     font-size: 28px;
+     margin-top: -6px;
+   }
+   #curretnt{
+   
+     position: relative;
+     display: flex;
+   }
+   .card1{
+   
+   width: 100%;
+   background: linear-gradient(135deg,#f6e88d,#aed2fa);
+   color: #fff;
+   border-radius:20px;
+   text-align: center;
+   padding: 20px;
+ } 
+ .titel{
+     display: center;
+     color:rgb(233, 144, 42);
+     padding: 15px;
+     font-size: 25px;
+     font-weight: 30px;
+     text-align: center;
+     
+ }
+ .tblW{
+   width: 100%;
+ }
+ 
+ .tblW td{
+   text-align: center;
+   border: 2px solid #fff;
+   padding: 10px;
+   
+   color: #0b0b0b;
+ }
+ 
+
+
+#weather-forecast {
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.545);
+  position: relative;
+  top:auto;
+  background: #55656d;
+}
+#past-weather-forecast {
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.545);
+  position: relative;
+  top:auto;
+  background: #395463;
+}
+
+.forecast-category {
+  padding: 0 10vw;
+  font-size: 25px;
+     font-weight: 30px;
+  margin-bottom: 40px;
+  text-transform: capitalize;
+  display: center;
+  color:rgb(233, 144, 42);
+  text-align: center;
+}
+
+.forecast-container {
+  padding: 0 10vw;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-gap: 20px;
+}
+
+.forecast-card {
+  background-color: rgba;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  color: white;
+  text-align: center;
+  
+  }
+
+.forecast-date {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.forecast-description {
+  margin-bottom: 10px;
+}
+
+.forecast-temp {
+  font-weight: bold;
+}
+
+.forecast-image {
+  width: 100%;
+  height: 200px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+
+.forecast-image img {
+  width:80%;
+  height: 90%;
+
+}
+
