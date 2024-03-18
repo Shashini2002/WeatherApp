@@ -147,8 +147,8 @@
 
         function fetchWeatherData(latitude, longitude) {
             const apiKey = "e3f5667eb4014a558b594723241203";
-            const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${latitude},${longitude}&aqi=no`;
-            fetch(url)
+            // const url = ;
+            fetch(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${latitude},${longitude}&aqi=no`)
                 .then(function (response) {
                     return response.json();
                 })
@@ -158,6 +158,7 @@
                 })
                 .catch(function (error) {
                     console.error("Error fetching weather data:", error);
+                    console.log("fetchWeatherData" + error);
                 });
         }
 
