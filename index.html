@@ -133,7 +133,7 @@
                 navigator.geolocation.getCurrentPosition(function (position) {
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
-                    fetchWeatherData(latitude, longitude);
+                    fetchWeatherData(latitude + "," +longitude);
                 });
             } else {
                 console.log("Geolocation is not supported by this browser.");
@@ -145,10 +145,10 @@
             fetchWeatherDataByLocation(searchVal);
         });
 
-        function fetchWeatherData(latitude, longitude) {
+        function fetchWeatherData(location) {
             const apiKey = "e3f5667eb4014a558b594723241203";
             // const url = ;
-            fetch(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${latitude},${longitude}&aqi=no`)
+            fetch(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=no`)
                 .then(function (response) {
                     return response.json();
                 })
