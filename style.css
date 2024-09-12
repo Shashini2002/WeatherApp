@@ -49,7 +49,7 @@
   left: 20px;
   font-size: 38px;
   font-weight: 400px;
-  color: #ffffff;
+  color: #68dee7;
   z-index: 9999;
 }
  
@@ -279,18 +279,18 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.545);
   position: relative;
   top:auto;
-  background: #55656d;
+
 }
 #past-weather-forecast {
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.545);
   position: relative;
   top:auto;
-  background: #395463;
+ 
 }
 
 .forecast-category {
-  padding: 0 10vw;
+  padding: 0 5vw;
   font-size: 25px;
      font-weight: 30px;
   margin-bottom: 40px;
@@ -312,7 +312,7 @@
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  color: white;
+  color:  #68dee7;
   text-align: center;
   
   }
@@ -340,8 +340,8 @@
 
 
 .forecast-image img {
-  width:80%;
-  height: 90%;
+  width:70%;
+  height: 70%;
 
 }
 
