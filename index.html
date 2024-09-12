@@ -6,10 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>forecastlogic</title>
     <link rel="stylesheet" href="style.css" />
-
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
-
-
 
 <body>
     <section id="home">
@@ -87,34 +86,43 @@
         </div>
     </section>
 
-
     <section id="weather-forecast">
         <div class="forecast-category">NEXT FOUR DAYS WEATHER FORECAST</div>
-      
-        <div class="forecast-container">
-          
-        </div>
-
+        <div class="forecast-container"></div>
     </section>
+
     <section id="past-weather-forecast">
-        <div class="forecast-category"> PAST EIGHT DAYS WEATHER FORECAST</div>
-        <div class="forecast-container">
-           
-        </div>
+        <div class="forecast-category">PAST EIGHT DAYS WEATHER FORECAST</div>
+        <div class="forecast-container"></div>
     </section>
 
     <section id="map">
         <div class="titel">MAP</div>
+        <!-- Map Container -->
+        <div id="map" style="height: 500px;"></div>
     </section>
 
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
     <script>
-         function toggleMode() {
+        // Initialize the map
+        const map = L.map('map').setView([0, 0], 2); // Default to the whole world
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        let marker = L.marker([0, 0]).addTo(map);
+
+        function toggleMode() {
             const body = document.body;
             const currentMode = body.classList.contains('dark-mode') ? 'dark' : 'light';
             body.classList.toggle('dark-mode');
             const modeToggleBtn = document.getElementById('mode-toggle');
             modeToggleBtn.textContent = currentMode === 'dark' ? 'Light Mode' : 'Dark Mode';
         }
+
         function updateTime() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -127,13 +135,26 @@
         // Update time every second
         setInterval(updateTime, 1000);
 
+        function initializeMap(latitude, longitude) {
+            map.setView([latitude, longitude], 10);
+            marker.setLatLng([latitude, longitude]);
+        }
+
+        function updateMap(latitude, longitude) {
+            map.setView([latitude, longitude], 10);
+            marker.setLatLng([latitude, longitude]);
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
-           
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(function (position) {
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
-                    fetchWeatherData(latitude + "," +longitude);
+                    initializeMap(latitude, longitude);
+                    fetchWeatherData(latitude, longitude);
+                }, function (error) {
+                    console.error("Error obtaining location: ", error);
+                    // Handle error case, e.g., display a message to the user
                 });
             } else {
                 console.log("Geolocation is not supported by this browser.");
@@ -145,59 +166,44 @@
             fetchWeatherDataByLocation(searchVal);
         });
 
-        function fetchWeatherData(location) {
+        function fetchWeatherData(latitude, longitude) {
             const apiKey = "e3f5667eb4014a558b594723241203";
-            // const url = ;
-            fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}`)
-                .then(function (response) {
-                    return response.json();
-                })
-                .then(function (data) {
-                    console.log(data);
+            const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${latitude},${longitude}&aqi=no`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
                     updateWeatherData(data);
+                    updateMap(latitude, longitude);
                 })
-                .catch(function (error) {
-                    console.error("Error fetching weather data:", error);
-                    console.log("fetchWeatherData" + error);
-                });
+                .catch(error => console.error("Error fetching weather data:", error));
         }
 
         function fetchWeatherDataByLocation(location) {
             const apiKey = "e3f5667eb4014a558b594723241203";
-            const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=no`;
+            const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=no`;
             fetch(url)
-                .then(function (response) {
-                    return response.json();
-                })
-                .then(function (data) {
-                    console.log(data);
+                .then(response => response.json())
+                .then(data => {
                     updateWeatherData(data);
+                    const latitude = data['location']['lat'];
+                    const longitude = data['location']['lon'];
+                    updateMap(latitude, longitude);
                 })
-                .catch(function (error) {
-                    console.error("Error fetching weather data:", error);
-                });
+                .catch(error => console.error("Error fetching weather data by location:", error));
         }
 
         function updateWeatherData(data) {
-            document.getElementById("temp").innerHTML = data['current']['temp_c'] + "&deg;C";
-            document.getElementById("condition").innerHTML = data['current']['condition']['text'];
             document.getElementById("location").innerHTML = data['location']['name'];
-            document.getElementById("hum").innerHTML = data['current']['humidity'] + "%";
-            document.getElementById("wind").innerHTML = data['current']['wind_kph'] + "km/h";
-
             document.getElementById("temp1").innerHTML = data['current']['temp_c'] + "&deg;C";
             document.getElementById("condition1").innerHTML = data['current']['condition']['text'];
-            document.getElementById("tz_id1").innerHTML = data['location']['tz_id'];
             document.getElementById("humidity1").innerHTML = data['current']['humidity'] + "%";
             document.getElementById("wind1").innerHTML = data['current']['wind_kph'] + "km/h";
             document.getElementById("region").innerHTML = data['location']['region'];
             document.getElementById("country").innerHTML = data['location']['country'];
             document.getElementById("lon").innerHTML = data['location']['lon'];
             document.getElementById("lat").innerHTML = data['location']['lat'];
+            document.getElementById("i").src = `http:${data['current']['condition']['icon']}`;
 
-            document.getElementById("i").src = `https:${data['current']['condition']['icon']}`;
-
-           
             fetchForecast(data['location']['lat'], data['location']['lon']);
             fetchPastWeather(data['location']['lat'], data['location']['lon']);
         }
@@ -210,7 +216,7 @@
             const startDateString = formatDate(pastDate);
             const endDateString = formatDate(currentDate);
 
-            const url = `https://api.weatherapi.com/v1/history.json?key=${apiKey}&q=${latitude},${longitude}&dt=${startDateString}&end_dt=${endDateString}`;
+            const url = `http://api.weatherapi.com/v1/history.json?key=${apiKey}&q=${latitude},${longitude}&dt=${startDateString}&end_dt=${endDateString}`;
 
             fetch(url)
                 .then(response => response.json())
@@ -225,7 +231,7 @@
             forecastContainer.innerHTML = '';
 
             data.forecast.forecastday.forEach(day => {
-                const pastForecastCard = createPastForecastCard(day.date, day.day.avgtemp_c, day.day.condition.text, `https:${day.day.condition.icon}`);
+                const pastForecastCard = createPastForecastCard(day.date, day.day.avgtemp_c, day.day.condition.text, `http:${day.day.condition.icon}`);
                 forecastContainer.appendChild(pastForecastCard);
             });
         }
@@ -256,15 +262,14 @@
 
         function fetchForecast(latitude, longitude) {
             const apiKey = "e3f5667eb4014a558b594723241203";
-            fetch(`https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${latitude},${longitude}&days=4`)
+            fetch(`http://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${latitude},${longitude}&days=4`)
                 .then(response => response.json())
                 .then(data => {
-                    const forecastContainer = document.querySelector('.forecast-container');
-
+                    const forecastContainer = document.querySelector('#weather-forecast .forecast-container');
                     forecastContainer.innerHTML = '';
 
                     data.forecast.forecastday.forEach(day => {
-                        createForecastCard(day.date, day.day.avgtemp_c, day.day.condition.text,`https:${day.day.condition.icon}`);
+                        createForecastCard(day.date, day.day.avgtemp_c, day.day.condition.text, `http:${day.day.condition.icon}`);
                     });
                 })
                 .catch(error => console.error("Error fetching forecast data:", error));
@@ -284,11 +289,9 @@
                 </div>
             `;
             forecastCard.innerHTML = forecastInfo;
-            document.querySelector('.forecast-container').appendChild(forecastCard);
+            document.querySelector('#weather-forecast .forecast-container').appendChild(forecastCard);
         }
-
     </script>
-
 </body>
 
 </html>
